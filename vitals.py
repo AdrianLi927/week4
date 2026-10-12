@@ -12,7 +12,7 @@
 # Open the file with encoding="utf-8". If the file does not exist, let the
 # FileNotFoundError happen. Type hints and a docstring stating the units.
 # Plain Python, no packages.
-def load_recording(path) -> list:
+def load_recording(path) -> list[float]:
     """Load heart rates (bpm) from a wearable export file.
 
     Lines starting with '#' are skipped, as is the 'time_s,hr_bpm' header.
@@ -46,7 +46,7 @@ def load_recording(path) -> list:
 # that are above the limit, rounded to one decimal. If there are no valid
 # readings, raise a ValueError. Type hints and a docstring stating the units.
 # Plain Python, no packages.
-def percent_above(readings: list, limit_bpm: float) -> float:
+def percent_above(readings: list[float], limit_bpm: float) -> float:
     """Percentage (0-100, one decimal) of the valid readings above limit_bpm.
 
     Readings of 0 (dropped samples) and above 250 bpm (artefacts) are ignored.
@@ -104,11 +104,11 @@ def make_recording_file(path, n_total: int, n_above: int, limit_bpm: float) -> N
 
 # PROMPT (final version used):
 # (your prompt for fill_gaps goes here)
-def fill_gaps(readings_bpm: list) -> list:
+def fill_gaps(readings_bpm: list[float]) -> list[float]:
     raise NotImplementedError("fill_gaps: body not written yet")
 
 
 # PROMPT (final version used):
 # (your prompt for save_recording goes here)
-def save_recording(path, readings_bpm: list, interval_s: float) -> None:
+def save_recording(path, readings_bpm: list[float], interval_s: float) -> None:
     raise NotImplementedError("save_recording: body not written yet")
