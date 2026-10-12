@@ -172,5 +172,22 @@ def fill_gaps(readings_bpm: list[float]) -> list[float]:
 
 # PROMPT (final version used):
 # (your prompt for save_recording goes here)
+
+# fill in `save_recording` in vitals.py, keeping the signature unchanged
+
+# It should be in a format that is loadable for `load_recording`.
+
+# It will open files with "x" mode.
+
+# It will write to a new file (when path is free of files bc x mode) in the same tidy format found in `data/night.csv` (with input float values rounded to ints for saving) into "data/save_test.csv"
+
+# Fill in the docstring below the signature and leave the comment above unchanged
+
+# [interrupted] I see you are trying to do tests.. just fill in the function first, the tests I will add later
+
+# [interrupted] youve been stuck for a while what are you stuck on?
+
+# The comments should have the exact same header
+# a zero reading should be written as a blank cell
 def save_recording(path, readings_bpm: list[float], interval_s: float) -> None:
     raise NotImplementedError("save_recording: body not written yet")
