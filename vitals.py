@@ -103,9 +103,71 @@ def make_recording_file(path, n_total: int, n_above: int, limit_bpm: float) -> N
 
 
 # PROMPT (final version used):
-# (your prompt for fill_gaps goes here)
+# fill in `fill_gaps` in vitals.py, keeping the signature unchanged
+#
+# The readings_bpm list will be from `data/night.csv` so some bpm values will be empty.
+# The empty values or values that are <=0 or >250 will be treated as artifacts and will be
+# normalised by linear interpolation between the nearest neighbours
+# (and if none then the neighbour will be treated as 0).
+# The input list should not be modified. A fresh one should be generated for the return value.
+#
+# Fill in the docstring below the signature and leave the comment above unchanged
 def fill_gaps(readings_bpm: list[float]) -> list[float]:
-    raise NotImplementedError("fill_gaps: body not written yet")
+    """Fill gaps (artifacts) in a heart-rate list by linear interpolation.
+
+    Units: beats per minute (bpm).
+
+    Invalid readings (artifacts) are those <= 0 or > 250. These values are
+    replaced by values linearly interpolated between the nearest valid
+    neighbours. If a neighbour is missing (gap at the start or end, or there
+    are no valid readings at all) that neighbour is treated as 0.0 for the
+    purposes of interpolation. The input list is not modified; a new list of
+    floats is returned.
+    """
+    if readings_bpm is None:
+        return []
+
+    n = len(readings_bpm)
+    if n == 0:
+        return []
+
+    # Work from a float copy so the input is not mutated.
+    orig = [float(x) for x in readings_bpm]
+    result = orig.copy()
+
+    def is_valid(v: float) -> bool:
+        return v > 0 and v <= 250
+
+    i = 0
+    while i < n:
+        if is_valid(orig[i]):
+            i += 1
+            continue
+
+        # Start of a run of invalid values
+        start = i
+        while i < n and not is_valid(orig[i]):
+            i += 1
+        end = i - 1
+
+        # Find nearest valid to the left
+        left_idx = start - 1
+        while left_idx >= 0 and not is_valid(orig[left_idx]):
+            left_idx -= 1
+        left_val = orig[left_idx] if left_idx >= 0 else 0.0
+
+        # Find nearest valid to the right
+        right_idx = i
+        while right_idx < n and not is_valid(orig[right_idx]):
+            right_idx += 1
+        right_val = orig[right_idx] if right_idx < n and is_valid(orig[right_idx]) else 0.0
+
+        run_len = end - start + 1
+        for k in range(1, run_len + 1):
+            frac = k / (run_len + 1)
+            result[start + k - 1] = left_val + (right_val - left_val) * frac
+
+    return result
 
 
 # PROMPT (final version used):
